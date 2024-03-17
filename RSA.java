@@ -1,3 +1,7 @@
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.math.BigInteger;
 
 public class RSA extends PublicKeyCryptosystem {
@@ -74,11 +78,43 @@ public class RSA extends PublicKeyCryptosystem {
         BigInteger cipherText = plainText.modPow(publicKey, modulus);
         return cipherText;
     }
+    public BigInteger timedEncrypt(BigInteger plainText, File output, Character delim) throws IOException {
+        long startTime = System.nanoTime();
+        BigInteger encryptedText = encrypt(plainText);
+        long endTime = System.nanoTime();
+
+        int bitLength = encryptedText.bitLength();
+
+        output.createNewFile();
+        FileWriter writer = new FileWriter(output.getName(), true);
+        PrintWriter printer = new PrintWriter(writer);
+        printer.println(bitLength + delim.toString() + (endTime - startTime));
+        writer.close();
+        printer.close();
+
+        return encryptedText;
+    }
     public BigInteger decrypt(BigInteger cipherText) {
         BigInteger prime1 = privateKey.subtract(BigInteger.ONE);
         BigInteger prime2 = privateKey2.subtract(BigInteger.ONE);
         BigInteger decryptionMod = prime1.multiply(prime2);
         BigInteger decryptionKey = publicKey.modInverse(decryptionMod);
         return cipherText.modPow(decryptionKey, modulus);
+    }
+    public BigInteger timedDecrypt(BigInteger cipherText, File output, Character delim) throws IOException {
+        long startTime = System.nanoTime();
+        BigInteger decryptedText = decrypt(cipherText);
+        long endTime = System.nanoTime();
+
+        int bitLength = decryptedText.bitLength();
+
+        output.createNewFile();
+        FileWriter writer = new FileWriter(output.getName(), true);
+        PrintWriter printer = new PrintWriter(writer);
+        printer.println(bitLength + delim.toString() + (endTime - startTime));
+        writer.close();
+        printer.close();
+
+        return decryptedText;
     }
 }
