@@ -41,7 +41,7 @@ public class ElGamal extends PublicKeyCryptosystem {
         setPublicKey();
     }
     public void setPublicKey() {
-        this.publicKey = primElement.modPow(privateKey, modulus);
+        if (primElement != null) this.publicKey = primElement.modPow(privateKey, modulus);
     }
 
     public void setPrimElement() {
@@ -51,12 +51,15 @@ public class ElGamal extends PublicKeyCryptosystem {
         */
 
         primElement = BigInteger.valueOf(2);
+        setPublicKey();
     }
     public void setPrimElement(BigInteger primElement) {
         this.primElement = primElement;
+        setPublicKey();
     }
     public void setPrimElement(int primElement) {
         this.primElement = BigInteger.valueOf(primElement);
+        setPublicKey();
     }
 
     public BigInteger getPrimElement() {
