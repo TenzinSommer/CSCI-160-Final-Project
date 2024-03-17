@@ -78,19 +78,16 @@ public class ElGamal extends PublicKeyCryptosystem {
         return encryptedText;
     }
     public Pair<BigInteger> timedEncrypt(BigInteger plainText, BigInteger randomKey, File output, Character delim) throws IOException {
+        int bitLength = plainText.bitLength();
+
         long startTime = System.nanoTime();
         Pair<BigInteger> encryptedText = encrypt(plainText, randomKey);
         long endTime = System.nanoTime();
 
-        int bitLength1 = encryptedText.getFirst().bitLength();
-        int bitLength2 = encryptedText.getSecond().bitLength();
-        double avgBitLength = bitLength1 + bitLength2;
-        avgBitLength = avgBitLength / 2;
-
         output.createNewFile();
         FileWriter writer = new FileWriter(output.getName(), true);
         PrintWriter printer = new PrintWriter(writer);
-        printer.println(avgBitLength + delim.toString() + (endTime - startTime));
+        printer.println(bitLength + delim.toString() + (endTime - startTime));
         writer.close();
         printer.close();
 
@@ -104,16 +101,19 @@ public class ElGamal extends PublicKeyCryptosystem {
         return x.mod(modulus);
     }
     public BigInteger timedDecrypt(Pair<BigInteger> cipherText, File output, Character delim) throws IOException {
+        int bitLength1 = cipherText.getFirst().bitLength();
+        int bitLength2 = cipherText.getSecond().bitLength();
+        double avgBitLength = bitLength1 + bitLength2;
+        avgBitLength = avgBitLength / 2;
+
         long startTime = System.nanoTime();
         BigInteger decryptedText = decrypt(cipherText);
         long endTime = System.nanoTime();
 
-        int bitLength = decryptedText.bitLength();
-
         output.createNewFile();
         FileWriter writer = new FileWriter(output.getName(), true);
         PrintWriter printer = new PrintWriter(writer);
-        printer.println(bitLength + delim.toString() + (endTime - startTime));
+        printer.println(avgBitLength + delim.toString() + (endTime - startTime));
         writer.close();
         printer.close();
 
