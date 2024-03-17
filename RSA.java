@@ -53,7 +53,7 @@ public class RSA extends PublicKeyCryptosystem {
         setModulus();
     }
     public void setModulus() {
-        this.modulus = privateKey.multiply(privateKey2);
+        if(privateKey != null && privateKey2 != null) this.modulus = privateKey.multiply(privateKey2);
     }
 
     public void setPublicKey() {
@@ -62,6 +62,12 @@ public class RSA extends PublicKeyCryptosystem {
         */
 
         publicKey = BigInteger.valueOf(7);
+    }
+    public void setPublicKey(BigInteger publicKey) {
+        this.publicKey = publicKey;
+    }
+    public void setPublicKey(int publicKey) {
+        this.publicKey = BigInteger.valueOf(publicKey);
     }
 
     public BigInteger encrypt(BigInteger plainText) {
