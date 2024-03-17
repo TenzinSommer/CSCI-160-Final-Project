@@ -78,6 +78,10 @@ public class RSA extends PublicKeyCryptosystem {
         this.publicKey = BigInteger.valueOf(publicKey);
     }
 
+    public BigInteger getPrivateKey2() {
+        return privateKey2;
+    }
+
     public BigInteger encrypt(BigInteger plainText) {
         BigInteger cipherText = plainText.modPow(publicKey, modulus);
         return cipherText;
