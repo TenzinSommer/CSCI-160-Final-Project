@@ -87,11 +87,11 @@ public class RSA extends PublicKeyCryptosystem {
         return cipherText;
     }
     public BigInteger timedEncrypt(BigInteger plainText, File output, Character delim) throws IOException {
+        int bitLength = plainText.bitLength();
+
         long startTime = System.nanoTime();
         BigInteger encryptedText = encrypt(plainText);
         long endTime = System.nanoTime();
-
-        int bitLength = encryptedText.bitLength();
 
         output.createNewFile();
         FileWriter writer = new FileWriter(output.getName(), true);
@@ -110,11 +110,11 @@ public class RSA extends PublicKeyCryptosystem {
         return cipherText.modPow(decryptionKey, modulus);
     }
     public BigInteger timedDecrypt(BigInteger cipherText, File output, Character delim) throws IOException {
+        int bitLength = cipherText.bitLength();
+
         long startTime = System.nanoTime();
         BigInteger decryptedText = decrypt(cipherText);
         long endTime = System.nanoTime();
-
-        int bitLength = decryptedText.bitLength();
 
         output.createNewFile();
         FileWriter writer = new FileWriter(output.getName(), true);
