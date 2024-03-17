@@ -1,3 +1,5 @@
+import java.io.File;
+import java.io.IOException;
 import java.math.BigInteger;
 
 public class TestPublicKeyCryptosystem {
@@ -9,11 +11,17 @@ public class TestPublicKeyCryptosystem {
         System.out.println("Plain Text: " + e_plainText);
         BigInteger randomKey = BigInteger.valueOf(197);
 
-        Pair<BigInteger> e_encryptedText = elGamal.encrypt(e_plainText, randomKey);
-        System.out.println("Encrypted Text: " + e_encryptedText);
+        try {
+            File output_encrypt = new File("ElGamal_encryptTimes.txt");
+            Pair<BigInteger> e_encryptedText = elGamal.timedEncrypt(e_plainText, randomKey, output_encrypt, ',');
+            System.out.println("Encrypted Text: " + e_encryptedText);
 
-        BigInteger e_decryptedText = elGamal.decrypt(e_encryptedText);
-        System.out.println("Decrypted Text: " + e_decryptedText);
+            File output_decrypt = new File("ElGamal_decryptTimes.txt");
+            BigInteger e_decryptedText = elGamal.timedDecrypt(e_encryptedText, output_decrypt, ',');
+            System.out.println("Decrypted Text: " + e_decryptedText);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         System.out.println();
 
@@ -24,10 +32,16 @@ public class TestPublicKeyCryptosystem {
         BigInteger r_plainText = BigInteger.valueOf(1070777);
         System.out.println("Plaintext: " + r_plainText);
 
-        BigInteger r_encryptedText = rsa.encrypt(r_plainText);
-        System.out.println("Encrypted Text: " + r_encryptedText);
+        try {
+            File output_encrypt = new File("RSA_encryptTimes.txt");
+            BigInteger r_encryptedText = rsa.timedEncrypt(r_plainText, output_encrypt, ',');
+            System.out.println("Encrypted Text: " + r_encryptedText);
 
-        BigInteger r_decryptedText = rsa.decrypt(r_encryptedText);
-        System.out.println("Decrypted Text: " + r_decryptedText);
+            File output_decrypt = new File("RSA_decryptTimes.txt");
+            BigInteger r_decryptedText = rsa.timedDecrypt(r_encryptedText, output_decrypt, ',');
+            System.out.println("Decrypted Text: " + r_decryptedText);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
