@@ -37,8 +37,12 @@ public class RSA extends PublicKeyCryptosystem {
         privateKey2 = BigInteger.valueOf(5);
     }
     public void setPrivateKeys(BigInteger privateKey, BigInteger privateKey2) {
-        privateKey = privateKey;
+        super.privateKey = privateKey;
         this.privateKey2 = privateKey2;
+    }
+    public void setPrivateKeys(int privateKey, int privateKey2) {
+        super.privateKey = BigInteger.valueOf(privateKey);
+        this.privateKey2 = BigInteger.valueOf(privateKey2);
     }
     public void setPrivateKey(BigInteger privateKey) {
         super.privateKey = privateKey;
