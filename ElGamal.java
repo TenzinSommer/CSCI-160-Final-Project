@@ -31,6 +31,7 @@ public class ElGamal extends PublicKeyCryptosystem {
         */
 
         modulus = BigInteger.valueOf(3);
+        setPrimElement();
         setPublicKey();
     }
     public void setPrivateKey(BigInteger privateKey) {
@@ -46,11 +47,6 @@ public class ElGamal extends PublicKeyCryptosystem {
     }
 
     public void setPrimElement() {
-        /* STUB-- not yet implemented!
-           Future implementation will involve getting a random value from the prime database
-           that is less than the modulus
-        */
-
         primElement = BigInteger.valueOf(2);
         setPublicKey();
     }
