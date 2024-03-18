@@ -53,4 +53,22 @@ public abstract class PublicKeyCryptosystem {
     public BigInteger getPublicKey() {
         return publicKey;
     }
+
+    protected BigInteger genRandPrime() {
+        /* STUB-- not yet implemented!
+           Future implementation will involve getting a random value from the prime database
+        */
+
+        BigInteger prime = new BigInteger("11");
+
+        return prime;
+    }
+
+    protected BigInteger genRandValue(long min, long max) {
+        /* STUB-- not yet implemented!
+           Future implementation will involve generating and returning a random value between the given bounds
+        */
+
+        return BigInteger.valueOf(min);
+    }
 }
