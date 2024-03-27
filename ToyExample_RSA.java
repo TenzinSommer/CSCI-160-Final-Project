@@ -1,5 +1,5 @@
 import java.math.*;
-public class RSA {
+public class ToyExample_RSA {
     public static BigInteger genMod(BigInteger prime1, BigInteger prime2) {
         return prime1.multiply(prime2);
     }

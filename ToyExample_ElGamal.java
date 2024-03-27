@@ -1,5 +1,5 @@
 import java.math.*;
-public class ElGamal {
+public class ToyExample_ElGamal {
     public static BigInteger genPublicKey(BigInteger privateKey, BigInteger mod, BigInteger primElement) {
         return primElement.modPow(privateKey, mod);
     }
