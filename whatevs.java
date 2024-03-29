@@ -2,8 +2,8 @@
 public class whatevs {
     public static void main(String[] args) {
         try {
-            grabbingRandomPrime heh = new grabbingRandomPrime();
-            System.out.println(heh.hehehehee());
+            grabbingRandomPrime grabbedPrime = new grabbingRandomPrime();
+            System.out.println(grabbedPrime.numberGrab());
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("test");
