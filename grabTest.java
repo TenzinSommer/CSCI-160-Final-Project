@@ -1,5 +1,4 @@
-
-public class whatevs {
+public class grabTest {
     public static void main(String[] args) {
         try {
             grabbingRandomPrime grabbedPrime = new grabbingRandomPrime();
