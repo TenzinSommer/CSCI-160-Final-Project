@@ -1,4 +1,5 @@
 import java.math.BigInteger;
+import java.util.Random;
 
 public abstract class PublicKeyCryptosystem {
     protected BigInteger modulus = new BigInteger("1");
@@ -54,21 +55,19 @@ public abstract class PublicKeyCryptosystem {
         return publicKey;
     }
 
-    protected BigInteger genRandPrime() {
-        /* STUB-- not yet implemented!
-           Future implementation will involve getting a random value from the prime database
-        */
-
-        BigInteger prime = new BigInteger("11");
-
-        return prime;
+    protected BigInteger genRandPrime() throws Exception {
+        grabbingRandomPrime primeGenerator = new grabbingRandomPrime();
+        return BigInteger.valueOf(primeGenerator.numberGrab("primes_primRoot2.txt", 10000));
     }
 
     protected BigInteger genRandValue(long min, long max) {
-        /* STUB-- not yet implemented!
-           Future implementation will involve generating and returning a random value between the given bounds
-        */
-
-        return BigInteger.valueOf(min);
+        if (max == min) return BigInteger.ZERO;
+        if (max < min) {
+            long temp = max;
+            max = min;
+            min = temp;
+        }
+        Random randomGenerator = new Random();
+        return BigInteger.valueOf(randomGenerator.nextLong(max - min) + min);
     }
 }
