@@ -29,12 +29,15 @@ public class RSA extends PublicKeyCryptosystem {
     }
 
     public void setPrivateKeys() {
-        /* STUB-- not yet implemented!
-           Future implementation will involve getting random values from the prime database
-        */
-
-        privateKey = BigInteger.valueOf(3);
-        privateKey2 = BigInteger.valueOf(5);
+        try {
+            privateKey = super.genRandPrime();
+            privateKey2 = super.genRandPrime();
+            while (privateKey == privateKey2) {
+                privateKey2 = super.genRandPrime();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     public void setPrivateKeys(BigInteger privateKey, BigInteger privateKey2) {
         super.privateKey = privateKey;
@@ -65,9 +68,13 @@ public class RSA extends PublicKeyCryptosystem {
     }
 
     public void setPublicKey() {
-        /* STUB-- not yet implemented!
-           Future implementation will involve getting random values from the prime database
-        */
+        /*try {
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
+
+        // NEED WAY TO ENSURE PRIME IS LESS THAN (P-1)(Q-1), so (P-1)(Q-1) must be greater than 3
 
         publicKey = BigInteger.valueOf(7);
     }
