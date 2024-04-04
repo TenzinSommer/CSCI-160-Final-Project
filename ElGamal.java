@@ -26,11 +26,12 @@ public class ElGamal extends PublicKeyCryptosystem {
     }
 
     public void setModulus() {
-        /* STUB-- not yet implemented!
-           Future implementation will involve getting a random value from the prime database
-        */
+        try {
+            modulus = super.genRandPrime();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        modulus = BigInteger.valueOf(3);
         setPrimElement();
         setPublicKey();
     }
@@ -43,7 +44,7 @@ public class ElGamal extends PublicKeyCryptosystem {
         setPublicKey();
     }
     public void setPublicKey() {
-        if (primElement != null) this.publicKey = primElement.modPow(privateKey, modulus);
+        if (primElement != null && modulus != null) this.publicKey = primElement.modPow(privateKey, modulus);
     }
 
     public void setPrimElement() {
