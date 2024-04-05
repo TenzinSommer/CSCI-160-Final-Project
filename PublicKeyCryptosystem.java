@@ -57,7 +57,7 @@ public abstract class PublicKeyCryptosystem {
 
     protected BigInteger genRandPrime() throws Exception {
         grabbingRandomPrime primeGenerator = new grabbingRandomPrime();
-        return BigInteger.valueOf(primeGenerator.numberGrab("primes_primRoot2.txt", 10000));
+        return BigInteger.valueOf(primeGenerator.numberGrab("primes_primRoot2.txt", 10000).getFirst());
     }
 
     protected BigInteger genRandValue(long min, long max) {

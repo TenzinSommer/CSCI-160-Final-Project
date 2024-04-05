@@ -68,15 +68,31 @@ public class RSA extends PublicKeyCryptosystem {
     }
 
     public void setPublicKey() {
-        /*try {
+        grabbingRandomPrime primeGrabber = new grabbingRandomPrime();
+        try {
+            long publicKey = primeGrabber.numberGrab("primes_primRoot2.txt", 10000).getFirst();
+            int publicKeyLine = primeGrabber.numberGrab("primes_primRoot2.txt", 10000).getSecond();
+            BigInteger privatekeyMin1 = privateKey.subtract(BigInteger.ONE);
+            BigInteger privateKey2Min1 = privateKey2.subtract(BigInteger.ONE);
+            BigInteger privateKeysMultiplied = privatekeyMin1.multiply(privateKey2Min1);
+            
+            long privateKeysMultipliedLong = privateKeysMultiplied.longValueExact();
+            
+            while (publicKey >= privateKeysMultipliedLong) {
+                publicKey = primeGrabber.numberGrab("primes_primRoot2.txt", 10000, publicKeyLine).getFirst();
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
-        }*/
+        }
 
         // NEED WAY TO ENSURE PRIME IS LESS THAN (P-1)(Q-1), so (P-1)(Q-1) must be greater than 3
-
-        publicKey = BigInteger.valueOf(7);
+        //
+        // pick prime from primRoot.txt randomly
+        // while prime is less than (p-1)(q-1), check which line prime is from
+        // pick prime from line number half as big as old number
+        // repeat until prime is smaller than (p-1)(q-1)
+        // publicKey = BigInteger.valueOf(7);
     }
     public void setPublicKey(BigInteger publicKey) {
         this.publicKey = publicKey;
@@ -84,11 +100,9 @@ public class RSA extends PublicKeyCryptosystem {
     public void setPublicKey(int publicKey) {
         this.publicKey = BigInteger.valueOf(publicKey);
     }
-
     public BigInteger getPrivateKey2() {
         return privateKey2;
     }
-
     public BigInteger encrypt(BigInteger plainText) {
         BigInteger cipherText = plainText.modPow(publicKey, modulus);
         return cipherText;

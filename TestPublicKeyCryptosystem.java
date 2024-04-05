@@ -43,5 +43,12 @@ public class TestPublicKeyCryptosystem {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        RSA rsaTest = new RSA(53, 59);
+        rsaTest.setPublicKey();
+        rsaTest.setPrivateKeys(53, 59);
+        rsaTest.setPublicKey();
+        
+        System.out.println(rsaTest.getPublicKey());
     }
 }
