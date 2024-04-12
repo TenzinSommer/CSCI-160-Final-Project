@@ -5,101 +5,119 @@ import java.io.PrintWriter;
 import java.math.BigInteger;
 
 public class RSA extends PublicKeyCryptosystem {
-    private BigInteger privateKey2 = new BigInteger("1");
+    private BigInteger privateKey2;
 
     public RSA() {
         super();
-        setPrivateKey2(5);
+        setPrivateKey2();
+        setModulus();
+        setPublicKey();
     }
     public RSA(BigInteger privateKey, BigInteger privateKey2) {
         super(privateKey);
         setPrivateKey2(privateKey2);
+        setModulus();
+        setPublicKey();
     }
     public RSA(int privateKey, int privateKey2) {
         super(privateKey);
         setPrivateKey2(privateKey2);
+        setModulus();
+        setPublicKey();
     }
-    public RSA(BigInteger modulus, BigInteger privateKey, BigInteger privateKey2) {
+    /*public RSA(BigInteger modulus, BigInteger privateKey, BigInteger privateKey2) {
         super(modulus, privateKey);
         setPrivateKey2(privateKey2);
     }
     public RSA(int modulus, int privateKey, int privateKey2) {
         super(modulus, privateKey);
         setPrivateKey2(privateKey2);
-    }
-
+    }*/
     public void setPrivateKeys() {
         try {
             privateKey = super.genRandPrime();
-            privateKey2 = super.genRandPrime();
+            this.privateKey2 = super.genRandPrime();
             while (privateKey == privateKey2) {
-                privateKey2 = super.genRandPrime();
+                this.privateKey2 = super.genRandPrime();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
     public void setPrivateKeys(BigInteger privateKey, BigInteger privateKey2) {
-        super.privateKey = privateKey;
-        this.privateKey2 = privateKey2;
+        setPrivateKey(privateKey);
+        setPrivateKey2(privateKey2);
     }
     public void setPrivateKeys(int privateKey, int privateKey2) {
-        super.privateKey = BigInteger.valueOf(privateKey);
-        this.privateKey2 = BigInteger.valueOf(privateKey2);
+        setPrivateKey(privateKey);
+        setPrivateKey(privateKey2);
     }
-    public void setPrivateKey(BigInteger privateKey) {
-        super.privateKey = privateKey;
-        setModulus();
-    }
-    public void setPrivateKey(int privateKey) {
-        super.privateKey = BigInteger.valueOf(privateKey);
-        setModulus();
-    }
-    public void setPrivateKey2(BigInteger privateKey) {
-        this.privateKey2 = privateKey;
-        setModulus();
-    }
-    public void setPrivateKey2(int privateKey) {
-        this.privateKey2 = BigInteger.valueOf(privateKey);
-        setModulus();
-    }
-    public void setModulus() {
-        if(privateKey != null && privateKey2 != null) this.modulus = privateKey.multiply(privateKey2);
-    }
-
-    public void setPublicKey() {
-        grabbingRandomPrime primeGrabber = new grabbingRandomPrime();
+    protected void setPrivateKey() {
+        // NEED TO MAKE SURE IT IS AT LEAST 5 so that public key can be smaller
         try {
-            long publicKey = primeGrabber.numberGrab("primes_primRoot2.txt", 10000).getFirst();
-            int publicKeyLine = primeGrabber.numberGrab("primes_primRoot2.txt", 10000).getSecond();
-            BigInteger privatekeyMin1 = privateKey.subtract(BigInteger.ONE);
-            BigInteger privateKey2Min1 = privateKey2.subtract(BigInteger.ONE);
-            BigInteger privateKeysMultiplied = privatekeyMin1.multiply(privateKey2Min1);
-            
-            long privateKeysMultipliedLong = privateKeysMultiplied.longValueExact();
-            
-            while (publicKey >= privateKeysMultipliedLong) {
-                publicKey = primeGrabber.numberGrab("primes_primRoot2.txt", 10000, publicKeyLine).getFirst();
-            }
-
+            long privateKey_h = super.genRandPrime().longValue();
+            // CHANGE IF BAD VAL
+            this.privateKey = new BigInteger(String.valueOf(privateKey_h));
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        // NEED WAY TO ENSURE PRIME IS LESS THAN (P-1)(Q-1), so (P-1)(Q-1) must be greater than 3
-        //
-        // pick prime from primRoot.txt randomly
-        // while prime is less than (p-1)(q-1), check which line prime is from
-        // pick prime from line number half as big as old number
-        // repeat until prime is smaller than (p-1)(q-1)
-        // publicKey = BigInteger.valueOf(7);
     }
-    public void setPublicKey(BigInteger publicKey) {
+    protected void setPrivateKey2() {
+        // NEED TO MAKE SURE IT IS AT LEAST 11 so that public key can be smaller
+        // MAKE SURE NOT EQUAL TO PRIVATE KEY
+        try {
+            long privateKey2_h = super.genRandPrime().longValue();
+            // CHANGE IF BAD VAL
+            this.privateKey2 = new BigInteger(String.valueOf(privateKey2_h));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    protected void setPrivateKey2(BigInteger privateKey) {
+        this.privateKey2 = new BigInteger(privateKey.toString());
+    }
+    protected void setPrivateKey2(int privateKey2) {
+        this.privateKey2 = new BigInteger(String.valueOf(privateKey2));
+    }
+    protected void setModulus() {
+        if(privateKey != null && privateKey2 != null)  {
+            this.modulus = new BigInteger(privateKey.multiply(privateKey2).toString());
+        }
+    }
+
+    protected void setPublicKey() {
+        if (super.privateKey != null && this.privateKey2 != null) {
+            // Set Public Key to a random prime less than (privateKey-1)(privateKey2-1)
+            grabbingRandomPrime primeGrabber = new grabbingRandomPrime();
+            try {
+                Pair<Integer> primeLinePair = primeGrabber.numberGrab("primes_primRoot2.txt", 10000);
+                long publicKey_h = primeLinePair.getFirst();
+                int publicKeyLine = primeLinePair.getSecond();
+                BigInteger privatekeyMin1 = BigInteger.valueOf(super.privateKey.longValue()).subtract(BigInteger.ONE);
+                BigInteger privateKey2Min1 = BigInteger.valueOf(this.privateKey2.longValue()).subtract(BigInteger.ONE);
+                BigInteger privateKeysMultiplied = privatekeyMin1.multiply(privateKey2Min1);
+
+                long privateKeysMultipliedLong = privateKeysMultiplied.longValueExact();
+
+                while (publicKey_h >= privateKeysMultipliedLong) {
+                    primeLinePair = primeGrabber.numberGrab("primes_primRoot2.txt", 10000, publicKeyLine);
+                    publicKey_h = primeLinePair.getFirst();
+                    publicKeyLine = primeLinePair.getSecond();
+                }
+
+                this.publicKey = new BigInteger(String.valueOf(publicKey_h));
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    /*public void setPublicKey(BigInteger publicKey) {
         this.publicKey = publicKey;
     }
     public void setPublicKey(int publicKey) {
         this.publicKey = BigInteger.valueOf(publicKey);
-    }
+    }*/
     public BigInteger getPrivateKey2() {
         return privateKey2;
     }
