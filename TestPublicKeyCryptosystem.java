@@ -45,9 +45,9 @@ public class TestPublicKeyCryptosystem {
         }
 
         RSA rsaTest = new RSA(53, 59);
-        rsaTest.setPublicKey();
+        //rsaTest.setPublicKey();
         rsaTest.setPrivateKeys(53, 59);
-        rsaTest.setPublicKey();
+        //rsaTest.setPublicKey();
         
         System.out.println(rsaTest.getPublicKey());
     }

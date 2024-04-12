@@ -63,12 +63,12 @@ public class RSA extends PublicKeyCryptosystem {
         }
     }
     protected void setPrivateKey2() {
-        // NEED TO MAKE SURE IT IS AT LEAST 11 so that public key can be smaller
         // MAKE SURE NOT EQUAL TO PRIVATE KEY
         try {
-            long privateKey2_h = super.genRandPrime().longValue();
-            // CHANGE IF BAD VAL
-            this.privateKey2 = new BigInteger(String.valueOf(privateKey2_h));
+            while (setPrivateKey() == setPrivateKey2()) {
+                long privateKey2_h = super.genRandPrime().longValue();
+                this.privateKey2 = new BigInteger(String.valueOf(privateKey2_h));
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
