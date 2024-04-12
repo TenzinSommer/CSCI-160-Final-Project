@@ -2,48 +2,43 @@ import java.math.BigInteger;
 import java.util.Random;
 
 public abstract class PublicKeyCryptosystem {
-    protected BigInteger modulus = new BigInteger("1");
-    protected BigInteger privateKey = new BigInteger("1");
-    protected BigInteger publicKey = new BigInteger("1");
+    protected BigInteger modulus;
+    protected BigInteger privateKey;
+    protected BigInteger publicKey;
 
     protected PublicKeyCryptosystem() {
-        setModulus();
-        setPrivateKey(2);
-        setPublicKey();
+        setPrivateKey();
     }
     protected PublicKeyCryptosystem(BigInteger privateKey) {
-        setModulus();
         setPrivateKey(privateKey);
-        setPublicKey();
     }
     protected PublicKeyCryptosystem(int privateKey) {
-        setModulus();
         setPrivateKey(privateKey);
-        setPublicKey();
     }
     protected PublicKeyCryptosystem(BigInteger modulus, BigInteger privateKey) {
         setModulus(modulus);
         setPrivateKey(privateKey);
-        setPublicKey();
     }
     protected PublicKeyCryptosystem(int modulus, int privateKey) {
         setModulus(modulus);
         setPrivateKey(privateKey);
-        setPublicKey();
     }
 
-    public abstract void setModulus();
-    public void setModulus(BigInteger modulus) {
-        this.modulus = modulus;
-        setPublicKey();
+    protected abstract void setModulus();
+    protected void setModulus(BigInteger modulus) {
+        this.modulus = new BigInteger(String.valueOf(modulus));
     }
-    public void setModulus(int modulus) {
+    protected void setModulus(int modulus) {
         this.modulus = BigInteger.valueOf(modulus);
-        setPublicKey();
     }
-    protected abstract void setPrivateKey(BigInteger privateKey);
-    protected abstract void setPrivateKey(int privateKey);
-    public abstract void setPublicKey();
+    protected abstract void setPrivateKey();
+    protected void setPrivateKey(BigInteger privateKey) {
+        this.privateKey = new BigInteger(privateKey.toString());
+    }
+    protected void setPrivateKey(int privateKey) {
+        this.privateKey = new BigInteger(String.valueOf(privateKey));
+    }
+    protected abstract void setPublicKey();
 
     public BigInteger getModulus() {
         return modulus;
@@ -59,6 +54,13 @@ public abstract class PublicKeyCryptosystem {
         grabbingRandomPrime primeGenerator = new grabbingRandomPrime();
         return BigInteger.valueOf(primeGenerator.numberGrab("primes_primRoot2.txt", 10000).getFirst());
     }
+    // USE INSTEAD OF REPEATING WORK IN CLASSES
+    /*protected BigInteger genRandPrimeLessThan() {
+
+    }
+    protected BigInteger genRandPrimeGreaterThan() {
+
+    }*/
 
     protected BigInteger genRandValue(long min, long max) {
         if (max == min) return BigInteger.ZERO;
