@@ -2,62 +2,69 @@ import java.io.*;
 import java.math.BigInteger;
 
 public class ElGamal extends PublicKeyCryptosystem {
-    private BigInteger primElement = new BigInteger("1");
+    protected BigInteger primElement;
 
     public ElGamal() {
         super();
+        setModulus();
         setPrimElement();
+        setPrivateKey();
+        setPublicKey();
     }
     public ElGamal(BigInteger privateKey) {
         super(privateKey);
+        setModulus();
         setPrimElement();
+        setPublicKey();
     }
     public ElGamal(int privateKey) {
         super(privateKey);
+        setModulus();
         setPrimElement();
+        setPublicKey();
     }
     public ElGamal(BigInteger modulus, BigInteger privateKey, BigInteger primElement) {
         super(modulus, privateKey);
         setPrimElement(primElement);
+        setPublicKey();
     }
     public ElGamal(int modulus, int privateKey, int primElement) {
         super(modulus, privateKey);
         setPrimElement(primElement);
+        setPublicKey();
     }
 
-    public void setModulus() {
+    protected void setModulus() {
         try {
-            modulus = super.genRandPrime();
+            modulus = BigInteger.valueOf(super.genRandPrime().getFirst());
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    protected void setPrivateKey() {
+        BigInteger randPrivateKey = new BigInteger(super.genRandValue(2, modulus.longValue()).toString());
+        this.privateKey = new BigInteger(randPrivateKey.toString());
+    }
+    protected void setPrivateKey(BigInteger privateKey) {
+        this.privateKey = new BigInteger(privateKey.toString());
+    }
+    protected void setPrivateKey(int privateKey) {
+        this.privateKey = new BigInteger(String.valueOf(privateKey));
+    }
+    protected void setPublicKey() {
+        if (primElement != null && modulus != null && privateKey != null) {
+            this.publicKey = new BigInteger(primElement.modPow(privateKey, modulus).toString());
+        }
+    }
 
-        setPrimElement();
-        setPublicKey();
+    protected void setPrimElement() {
+        primElement = new BigInteger("2");
     }
-    public void setPrivateKey(BigInteger privateKey) {
-        this.privateKey = privateKey;
-        setPublicKey();
+    protected void setPrimElement(BigInteger primElement) {
+        this.primElement = new BigInteger(primElement.toString());
     }
-    public void setPrivateKey(int privateKey) {
-        this.privateKey = BigInteger.valueOf(privateKey);
-        setPublicKey();
-    }
-    public void setPublicKey() {
-        if (primElement != null && modulus != null) this.publicKey = primElement.modPow(privateKey, modulus);
-    }
-
-    public void setPrimElement() {
-        primElement = BigInteger.valueOf(2);
-        setPublicKey();
-    }
-    public void setPrimElement(BigInteger primElement) {
-        this.primElement = primElement;
-        setPublicKey();
-    }
-    public void setPrimElement(int primElement) {
-        this.primElement = BigInteger.valueOf(primElement);
-        setPublicKey();
+    protected void setPrimElement(int primElement) {
+        this.primElement = new BigInteger(String.valueOf(primElement));
     }
 
     public BigInteger getPrimElement() {
@@ -75,7 +82,7 @@ public class ElGamal extends PublicKeyCryptosystem {
         return encryptedText;
     }
     public Pair<BigInteger> timedEncrypt(BigInteger plainText, BigInteger randomKey, File output, Character delim) throws IOException {
-        int bitLength = plainText.bitLength();
+        int bitLength = privateKey.bitLength();
 
         long startTime = System.nanoTime();
         Pair<BigInteger> encryptedText = encrypt(plainText, randomKey);
@@ -98,10 +105,7 @@ public class ElGamal extends PublicKeyCryptosystem {
         return x.mod(modulus);
     }
     public BigInteger timedDecrypt(Pair<BigInteger> cipherText, File output, Character delim) throws IOException {
-        int bitLength1 = cipherText.getFirst().bitLength();
-        int bitLength2 = cipherText.getSecond().bitLength();
-        double avgBitLength = bitLength1 + bitLength2;
-        avgBitLength = avgBitLength / 2;
+        int bitLength = privateKey.bitLength();
 
         long startTime = System.nanoTime();
         BigInteger decryptedText = decrypt(cipherText);
@@ -110,7 +114,7 @@ public class ElGamal extends PublicKeyCryptosystem {
         output.createNewFile();
         FileWriter writer = new FileWriter(output.getName(), true);
         PrintWriter printer = new PrintWriter(writer);
-        printer.println(avgBitLength + delim.toString() + (endTime - startTime));
+        printer.println(bitLength + delim.toString() + (endTime - startTime));
         writer.close();
         printer.close();
 
