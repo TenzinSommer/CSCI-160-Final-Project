@@ -6,7 +6,7 @@ public class TestPublicKeyCryptosystem {
     public static void main(String[] args) {
         // ElGamal
         System.out.println("ElGamal");
-        ElGamal elGamal = new ElGamal(467, 153, 2);
+        ElGamal elGamal = new ElGamal();
         BigInteger e_plainText = BigInteger.valueOf(331);
         System.out.println("Plain Text: " + e_plainText);
         BigInteger randomKey = BigInteger.valueOf(197);
@@ -27,8 +27,8 @@ public class TestPublicKeyCryptosystem {
 
         // RSA
         System.out.println("RSA");
-        RSA rsa = new RSA(1223, 1987);
-        rsa.setPublicKey(948047);
+        RSA rsa = new RSA();
+        System.out.println("Public Key: " + rsa.getPublicKey());
         BigInteger r_plainText = BigInteger.valueOf(1070777);
         System.out.println("Plaintext: " + r_plainText);
 
@@ -43,12 +43,5 @@ public class TestPublicKeyCryptosystem {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        RSA rsaTest = new RSA(53, 59);
-        //rsaTest.setPublicKey();
-        rsaTest.setPrivateKeys(53, 59);
-        //rsaTest.setPublicKey();
-        
-        System.out.println(rsaTest.getPublicKey());
     }
 }
