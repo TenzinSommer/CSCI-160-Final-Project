@@ -1,5 +1,5 @@
 import java.math.*;
-public class ToyExample_ElGamal {
+public class ElGamal {
     public static BigInteger genPublicKey(BigInteger privateKey, BigInteger mod, BigInteger primElement) {
         return primElement.modPow(privateKey, mod);
     }
@@ -25,8 +25,8 @@ public class ToyExample_ElGamal {
 
     public static void main(String[] args) {
         BigInteger privateKey = new BigInteger("153");
-        BigInteger mod = new BigInteger("467");  // 
-        BigInteger primElement = new BigInteger("2"); // always two
+        BigInteger mod = new BigInteger("467");
+        BigInteger primElement = new BigInteger("2");
 
         BigInteger publicKey = genPublicKey(privateKey, mod, primElement);
         System.out.println("Public Key: " + publicKey);
@@ -39,8 +39,5 @@ public class ToyExample_ElGamal {
         System.out.println("Cipher Text: " + encryptedText);
         BigInteger decryptedText = decrypt(privateKey, encryptedText, mod);
         System.out.println("Decrypted text: " + decryptedText.toString());
-        // grabbingRandomPrime primeGrabber = new grabbingRandomPrime();
-        // int grabbedPrime = primeGrabber.numberGrab("primes_primRoot2.txt", 10000);
-        // BigInteger privateKey = new BigInteger(grabbedPrime);
     }
 }
