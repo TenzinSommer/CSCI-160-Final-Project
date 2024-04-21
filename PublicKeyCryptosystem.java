@@ -7,7 +7,7 @@ public abstract class PublicKeyCryptosystem {
     protected BigInteger publicKey;
 
     protected PublicKeyCryptosystem() {
-        setPrivateKey();
+
     }
     protected PublicKeyCryptosystem(BigInteger privateKey) {
         setPrivateKey(privateKey);
@@ -50,17 +50,29 @@ public abstract class PublicKeyCryptosystem {
         return publicKey;
     }
 
-    protected BigInteger genRandPrime() throws Exception {
+    protected Pair<Integer> genRandPrime() throws Exception {
         grabbingRandomPrime primeGenerator = new grabbingRandomPrime();
-        return BigInteger.valueOf(primeGenerator.numberGrab("primes_primRoot2.txt", 10000).getFirst());
+        return primeGenerator.numberGrab("primes_primRoot2.txt", 10000);
     }
-    // USE INSTEAD OF REPEATING WORK IN CLASSES
-    /*protected BigInteger genRandPrimeLessThan() {
+    protected Pair<Integer> genRandPrimeLessThan(long greaterValue) throws Exception {
+        grabbingRandomPrime primeGrabber = new grabbingRandomPrime();
+        Pair<Integer> primeLinePair = primeGrabber.numberGrab("primes_primRoot2.txt", 10000);
+        int smallerValue = primeLinePair.getFirst();
+        int smallerValueLine = primeLinePair.getSecond();
 
+        while (smallerValue >= greaterValue) {
+            primeLinePair = primeGrabber.numberGrabLessThan("primes_primRoot2.txt", 10000, smallerValueLine);
+            smallerValue = primeLinePair.getFirst();
+            smallerValueLine = primeLinePair.getSecond();
+        }
+
+        Pair<Integer> returnPair = new Pair<Integer>(smallerValue, smallerValueLine);
+        return returnPair;
     }
-    protected BigInteger genRandPrimeGreaterThan() {
-
-    }*/
+    protected Pair<Integer> genRandPrimeNotEqual(int prevLine) throws Exception {
+        grabbingRandomPrime primeGenerator = new grabbingRandomPrime();
+        return primeGenerator.numberGrabNotEqual("primes_primRoot2.txt", 10000, prevLine);
+    }
 
     protected BigInteger genRandValue(long min, long max) {
         if (max == min) return BigInteger.ZERO;
