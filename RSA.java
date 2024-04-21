@@ -5,10 +5,11 @@ import java.io.PrintWriter;
 import java.math.BigInteger;
 
 public class RSA extends PublicKeyCryptosystem {
-    private BigInteger privateKey2;
+    protected BigInteger privateKey2;
 
     public RSA() {
         super();
+        setPrivateKey();
         setPrivateKey2();
         setModulus();
         setPublicKey();
@@ -25,56 +26,53 @@ public class RSA extends PublicKeyCryptosystem {
         setModulus();
         setPublicKey();
     }
-    /*public RSA(BigInteger modulus, BigInteger privateKey, BigInteger privateKey2) {
-        super(modulus, privateKey);
+    public RSA(BigInteger privateKey, BigInteger privateKey2, BigInteger publicKey) {
+        super(privateKey);
         setPrivateKey2(privateKey2);
+        setModulus();
+        setPublicKey(publicKey);
     }
-    public RSA(int modulus, int privateKey, int privateKey2) {
-        super(modulus, privateKey);
+    public RSA(int privateKey, int privateKey2, int publicKey) {
+        super(privateKey);
         setPrivateKey2(privateKey2);
-    }*/
-    public void setPrivateKeys() {
-        try {
-            privateKey = super.genRandPrime();
-            this.privateKey2 = super.genRandPrime();
-            while (privateKey == privateKey2) {
-                this.privateKey2 = super.genRandPrime();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        setModulus();
+        setPublicKey(publicKey);
     }
-    public void setPrivateKeys(BigInteger privateKey, BigInteger privateKey2) {
+    protected void setPrivateKeys() {
+        setPrivateKey();
+        setPrivateKey2();
+    }
+    protected void setPrivateKeys(BigInteger privateKey, BigInteger privateKey2) {
         setPrivateKey(privateKey);
         setPrivateKey2(privateKey2);
     }
-    public void setPrivateKeys(int privateKey, int privateKey2) {
+    protected void setPrivateKeys(int privateKey, int privateKey2) {
         setPrivateKey(privateKey);
         setPrivateKey(privateKey2);
     }
     protected void setPrivateKey() {
-        // NEED TO MAKE SURE IT IS AT LEAST 5 so that public key can be smaller
         try {
-            long privateKey_h = super.genRandPrime().longValue();
-            // CHANGE IF BAD VAL
+            long privateKey_h = super.genRandPrime().getFirst().longValue();
             this.privateKey = new BigInteger(String.valueOf(privateKey_h));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
     protected void setPrivateKey2() {
-        // MAKE SURE NOT EQUAL TO PRIVATE KEY
-        try {
-            while (setPrivateKey() == setPrivateKey2()) {
-                long privateKey2_h = super.genRandPrime().longValue();
-                this.privateKey2 = new BigInteger(String.valueOf(privateKey2_h));
+        if (privateKey != null) {
+            try {
+                Pair<Integer> privateKey2_h = super.genRandPrime();
+                if (privateKey2_h.getFirst() == privateKey.longValue()) {
+                    privateKey2_h = genRandPrimeNotEqual(privateKey2_h.getSecond());
+                }
+                this.privateKey2 = new BigInteger(String.valueOf(privateKey2_h.getFirst()));
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
-    protected void setPrivateKey2(BigInteger privateKey) {
-        this.privateKey2 = new BigInteger(privateKey.toString());
+    protected void setPrivateKey2(BigInteger privateKey2) {
+        this.privateKey2 = new BigInteger(privateKey2.toString());
     }
     protected void setPrivateKey2(int privateKey2) {
         this.privateKey2 = new BigInteger(String.valueOf(privateKey2));
@@ -88,36 +86,33 @@ public class RSA extends PublicKeyCryptosystem {
     protected void setPublicKey() {
         if (super.privateKey != null && this.privateKey2 != null) {
             // Set Public Key to a random prime less than (privateKey-1)(privateKey2-1)
-            grabbingRandomPrime primeGrabber = new grabbingRandomPrime();
             try {
-                Pair<Integer> primeLinePair = primeGrabber.numberGrab("primes_primRoot2.txt", 10000);
-                long publicKey_h = primeLinePair.getFirst();
-                int publicKeyLine = primeLinePair.getSecond();
-                BigInteger privatekeyMin1 = BigInteger.valueOf(super.privateKey.longValue()).subtract(BigInteger.ONE);
+                BigInteger privateKeyMin1 = BigInteger.valueOf(super.privateKey.longValue()).subtract(BigInteger.ONE);
                 BigInteger privateKey2Min1 = BigInteger.valueOf(this.privateKey2.longValue()).subtract(BigInteger.ONE);
-                BigInteger privateKeysMultiplied = privatekeyMin1.multiply(privateKey2Min1);
+                BigInteger privateKeysMultiplied = privateKeyMin1.multiply(privateKey2Min1);
 
                 long privateKeysMultipliedLong = privateKeysMultiplied.longValueExact();
 
-                while (publicKey_h >= privateKeysMultipliedLong) {
-                    primeLinePair = primeGrabber.numberGrab("primes_primRoot2.txt", 10000, publicKeyLine);
-                    publicKey_h = primeLinePair.getFirst();
-                    publicKeyLine = primeLinePair.getSecond();
+                Pair<Integer> primeLinePair = genRandPrimeLessThan(privateKeysMultipliedLong);
+
+                while (privateKeysMultiplied.gcd(BigInteger.valueOf(primeLinePair.getFirst())).compareTo(BigInteger.ONE) != 0) {
+                    System.out.println(primeLinePair.getFirst() + " "  + privateKeysMultiplied.intValue() + " " + privateKeysMultiplied.gcd(BigInteger.valueOf(primeLinePair.getFirst())));
+                    primeLinePair = genRandPrimeNotEqual(primeLinePair.getSecond());
                 }
 
-                this.publicKey = new BigInteger(String.valueOf(publicKey_h));
+                this.publicKey = new BigInteger(String.valueOf(primeLinePair.getFirst()));
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
-    /*public void setPublicKey(BigInteger publicKey) {
-        this.publicKey = publicKey;
+    protected void setPublicKey(BigInteger publicKey) {
+        this.publicKey = new BigInteger(publicKey.toString());
     }
-    public void setPublicKey(int publicKey) {
-        this.publicKey = BigInteger.valueOf(publicKey);
-    }*/
+    protected void setPublicKey(int publicKey) {
+        this.publicKey = new BigInteger(String.valueOf(publicKey));
+    }
     public BigInteger getPrivateKey2() {
         return privateKey2;
     }
@@ -126,7 +121,9 @@ public class RSA extends PublicKeyCryptosystem {
         return cipherText;
     }
     public BigInteger timedEncrypt(BigInteger plainText, File output, Character delim) throws IOException {
-        int bitLength = plainText.bitLength();
+        int bitLength1 = privateKey.bitLength();
+        int bitLength2 = privateKey2.bitLength();
+        double avgBitLength = (bitLength1 + bitLength2) / 2;
 
         long startTime = System.nanoTime();
         BigInteger encryptedText = encrypt(plainText);
@@ -135,7 +132,7 @@ public class RSA extends PublicKeyCryptosystem {
         output.createNewFile();
         FileWriter writer = new FileWriter(output.getName(), true);
         PrintWriter printer = new PrintWriter(writer);
-        printer.println(bitLength + delim.toString() + (endTime - startTime));
+        printer.println(avgBitLength + delim.toString() + (endTime - startTime));
         writer.close();
         printer.close();
 
@@ -145,11 +142,20 @@ public class RSA extends PublicKeyCryptosystem {
         BigInteger prime1 = privateKey.subtract(BigInteger.ONE);
         BigInteger prime2 = privateKey2.subtract(BigInteger.ONE);
         BigInteger decryptionMod = prime1.multiply(prime2);
-        BigInteger decryptionKey = publicKey.modInverse(decryptionMod);
-        return cipherText.modPow(decryptionKey, modulus);
+        try {
+            BigInteger decryptionKey = publicKey.modInverse(decryptionMod);
+            return cipherText.modPow(decryptionKey, modulus);
+        } catch (ArithmeticException e) {
+            System.out.println("Public key: " + publicKey);
+            System.out.println("Decryption mod: " + decryptionMod);
+            e.printStackTrace();
+        }
+        return null;
     }
     public BigInteger timedDecrypt(BigInteger cipherText, File output, Character delim) throws IOException {
-        int bitLength = cipherText.bitLength();
+        int bitLength1 = privateKey.bitLength();
+        int bitLength2 = privateKey2.bitLength();
+        double avgBitLength = (bitLength1 + bitLength2) / 2;
 
         long startTime = System.nanoTime();
         BigInteger decryptedText = decrypt(cipherText);
@@ -158,7 +164,7 @@ public class RSA extends PublicKeyCryptosystem {
         output.createNewFile();
         FileWriter writer = new FileWriter(output.getName(), true);
         PrintWriter printer = new PrintWriter(writer);
-        printer.println(bitLength + delim.toString() + (endTime - startTime));
+        printer.println(avgBitLength + delim.toString() + (endTime - startTime));
         writer.close();
         printer.close();
 
