@@ -1,5 +1,5 @@
 ## Source
-The primes_primRoot2.txt file contains the primes without the beginning comments from b001122.txt. These primes were outsourced from The On-Line Encyclopedia of Integer Sequences (OEIS) and can be found [here](https://oeis.org/A001122). 
+The **primes_primRoot2.txt** file contains the primes without the beginning comments from **b001122.txt**. These primes were outsourced from The On-Line Encyclopedia of Integer Sequences (OEIS) and can be found [here](https://oeis.org/A001122). 
 
 
 
