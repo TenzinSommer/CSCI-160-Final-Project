@@ -6,7 +6,7 @@
 #include "Pair.h"
 #include "grabbingRandomPrime.h"
 
-/*int main(int argc, const char * argv[]) {
+int main(int argc, const char * argv[]) {
     srand(static_cast<int>(time(NULL)));
     
     // ElGamal
@@ -52,4 +52,4 @@
     output.close();
 
     return 0;
-}*/
+}
