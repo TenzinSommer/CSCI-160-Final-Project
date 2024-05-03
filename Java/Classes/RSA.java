@@ -96,7 +96,6 @@ public class RSA extends PublicKeyCryptosystem {
                 Pair<Integer> primeLinePair = genRandPrimeLessThan(privateKeysMultipliedLong);
 
                 while (privateKeysMultiplied.gcd(BigInteger.valueOf(primeLinePair.getFirst())).compareTo(BigInteger.ONE) != 0) {
-                    System.out.println(primeLinePair.getFirst() + " "  + privateKeysMultiplied.intValue() + " " + privateKeysMultiplied.gcd(BigInteger.valueOf(primeLinePair.getFirst())));
                     primeLinePair = genRandPrimeNotEqual(primeLinePair.getSecond());
                 }
 
