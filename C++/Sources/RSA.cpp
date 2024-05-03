@@ -91,6 +91,7 @@ RSA::RSA(int privateKey, int privateKey2, int publicKey) : PublicKeyCryptosystem
     setModulus();
     setPublicKey(publicKey);
 }
+RSA::~RSA() {}
 
 long long RSA::getPrivateKey2() {
     return privateKey2;
