@@ -28,6 +28,7 @@ public:
     RSA(int privateKey, int privateKey2);
     RSA(long long privateKey, long long privateKey2, long long publicKey);
     RSA(int privateKey, int privateKey2, int publicKey);
+    ~RSA();
     
     long long getPrivateKey2();
     long long encrypt(long long plainText);
